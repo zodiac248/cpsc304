@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/select.min.js"></script>
+  <link href="/css/select.css" rel="stylesheet" />
+
+
+</head>
+
+<body>
+  <input id="id" type="hidden" name="name" value="{{ employee.id }}"><br>
+  <table style="width: 200px;margin: 20px auto;">
+    <th>
+    <td colspan="2">employee edit</td>
+    </th>
+    <tr>
+      <td> <label>name:</label></td>
+      <td> <input id="name" type="text" name="name" value="{{employee.name}}"></td>
+    </tr>
+    <tr>
+      <td> <label>password:</label></td>
+      <td> <input id="pass" type="password" name="password"  value="{{employee.password}}"></td>
+    </tr>
+    <tr>
+      <td> <label>phone:</label></td>
+      <td> <input id="phone" type="text" name="phone"  value="{{employee.phone}}"></td>
+    </tr>
+    <tr>
+      <td> <label>address:</label></td>
+      <td> <input id="address" type="text" name="address" value="{{employee.address}}"></td>
+    </tr>
+    <tr>
+      <td> <label>department:</label></td>
+      <td> <select id="select" style="width: 150px;" /></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="width: 100px;"> <input type="button" value="submit" onclick="submit()">
+      <td>
+    </tr>
+  </table>
+
+    <script>
+      $.ajax({
+        type: "get",
+        url: '/manager/departments',
+        success: function (data) {
+          $('#select').select2({
+            maximumInputLength: 20,
+            minimumResultsForSearch: Infinity,
+            data:data.result   
+          });
+          $('#select').val(['{{ employee.departmentId }}']).trigger('change');
+        }
+      })
+
+
+      function submit() {
+        $.ajax({
+          type: "post",
+          url: "/manager/employee/update",
+          data: {
+            id:$('#id').val(),
+            name: $('#name').val(),
+            password: $('#pass').val(),
+            phone: $('#phone').val(),
+            address: $('#address').val(),
+            departmentId:$('#select').val()
+          },
+          success: function (data) {
+            if(data.code == 0){
+              window.location = "/manager"
+            }else{
+              alert(data.error)
+            }
+          }
+        })
+      }
+    </script>
+  </div>
+</body>
+
+</html>

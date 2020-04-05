@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/select.min.js"></script>
+  <link href="/css/select.css" rel="stylesheet" />
+</head>
+
+<body>
+  <table style="width: 300px;margin: 20px auto;padding:20px">
+    <th>
+    <td colspan="2">participant search</td>
+    </th>
+    <tr>
+      <td> <label>min age:</label></td>
+      <td> <input id="min" type="text" ></td>
+    </tr>
+    <tr>
+      <td> <label>max age:</label></td>
+      <td> <input id="max" type="text"></td>
+    </tr>
+    <tr>
+      <td> <label>manufacturer:</label></td>
+      <td> <input id="manu" type="text"></td>
+    </tr>
+    <tr>
+      <td> <label> name:</label></td>
+      <td> <input id="showName" type="checkbox"  ></td>
+    </tr>
+    <tr>
+      <td> <label> medication:</label></td>
+      <td> <input id="showMed" type="checkbox"  ></td>
+    </tr>
+    <tr>
+      <td> <label> employee id:</label></td>
+      <td> <input id="showEmp" type="checkbox"  ></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="width: 100px;"> <input type="button" value="submit" onclick="search()">
+      <td>
+    </tr>
+  </table>
+  <button onclick="showSideEffectPatient()" style="display:block;margin:0 auto"> show all participants experienced all symptom</button>
+  <button onclick="showAverageAgeByProtocol()" style="display:block;margin:0 auto"> show average age by protocol</button>
+
+  <table id="result" style="width: 500px;margin: 20px auto;padding:20px;text-align:center"></table>
+  <script>
+    
+    function showSideEffectPatient(){
+      $.ajax({
+        type: "post",
+        url: "/employee/participant/showSideEffectPatient",
+        data: {
+          min: $('#min').val(),
+          max: $('#max').val(),
+          showName: $("#showName").is(':checked')
+        },
+        success: function (data) {
+          let html = "";
+          if (data.code == 0 && data.data.length>0) {
+            html += '<tr><th>name</th><th>age</th><th>medication</th><th>symptom</th></tr>'
+              for(let row of data.data){
+                html +=`<tr><td>${row.name}</td><td>${row.age}</td> <td>${row.med_name}</td> <td>${row.symptom}</td></tr>`
+               
+              } 
+            $('#result').html(html)
+          } else {
+            alert(data.error)
+          }
+        }
+      })
+    }
+
+
+    function showAverageAgeByProtocol(){
+      $.ajax({
+        type: "post",
+        url: "/employee/participant/showAverageAgeByProtocol",
+        data: {
+          min: $('#min').val(),
+          max: $('#max').val(),
+          manu: $('#manu').val(),
+          showName: $("#showName").is(':checked')
+        },
+        success: function (data) {
+          let html = "";
+          if (data.code == 0 && data.data.length>0) {
+            html += '<tr><th>protocol name</th><th>average age</th></tr>'
+            for(let row of data.data){
+              html +=`<tr><td>${row.med}</td><td>${row.average}</td> </tr>`
+
+            }
+            $('#result').html(html)
+          } else {
+            alert(data.error)
+          }
+        }
+      })
+    }
+
+    function search() {
+      $.ajax({
+        type: "post",
+        url: "/employee/participant/search",
+        data: {
+          min: $('#min').val(),
+          max: $('#max').val(),
+          manu: $('#manu').val(),
+          showName: $("#showName").is(':checked'),
+          showMed: $("#showMed").is(':checked'),
+          showEmp: $("#showEmp").is(':checked')
+        },
+        success: function (data) {
+          let html = "";
+          if (data.code == 0 && data.data.length>0) {
+            if (! $("#showName").is(':checked') && !$("#showMed").is(':checked') && ! $("#showEmp").is(':checked')) {
+              html +='<tr><th>id</th><th>age</th></tr>';
+            } else if ($("#showName").is(':checked') && !$("#showMed").is(':checked') && !$("#showEmp").is(':checked')) {
+              html += '<tr><th>id</th><th>name</th><th>age</th></tr>';
+            } else if (!$("#showName").is(':checked') && !$("#showMed").is(':checked') && $("#showEmp").is(':checked')) {
+              html += '<tr><th>id</th><th>age</th><th>supervisor</th></tr>';
+            } else if (!$("#showName").is(':checked') && $("#showMed").is(':checked') && !$("#showEmp").is(':checked')) {
+              html += '<tr><th>id</th><th>age</th><th>medication</th></tr>';
+            } else if ($("#showName").is(':checked') && $("#showMed").is(':checked') && !$("#showEmp").is(':checked')) {
+              html += '<tr><th>id</th><th>name</th><th>age</th><th>medication</th></tr>';
+            } else if (!$("#showName").is(':checked') && $("#showMed").is(':checked') && $("#showEmp").is(':checked')) {
+              html += '<tr><th>id</th><th>supervisor</th><th>age</th><th>medication</th></tr>';
+            } else if ($("#showName").is(':checked') && !$("#showMed").is(':checked') && $("#showEmp").is(':checked')) {
+              html += '<tr><th>id</th><th>name</th><th>age</th><th>supervisor</th></tr>';
+            } else if ($("#showName").is(':checked') && $("#showMed").is(':checked') && $("#showEmp").is(':checked')) {
+              html += '<tr><th>id</th><th>name</th><th>age</th><th>mediction</th><th>supervisor</th></tr>';
+            };
+              for(let row of data.data){
+                if(! $("#showName").is(':checked') && !$("#showMed").is(':checked') && ! $("#showEmp").is(':checked')){
+                  html +=`<tr><td>${row.part_id}</td><td>${row.age}</td></tr>`
+                }else if ($("#showName").is(':checked') && !$("#showMed").is(':checked') && !$("#showEmp").is(':checked')){
+                  html +=`<tr><td>${row.part_id}</td> <td>${row.part_name}</td><td>${row.age}</td></tr>`
+                } else if (!$("#showName").is(':checked') && !$("#showMed").is(':checked') && $("#showEmp").is(':checked')) {
+                  html +=`<tr><td>${row.part_id}</td> <td>${row.age}</td><td>${row.empid}</td></tr>`
+                } else if (!$("#showName").is(':checked') && $("#showMed").is(':checked') && !$("#showEmp").is(':checked')) {
+                  html +=`<tr><td>${row.part_id}</td> <td>${row.age}</td><td>${row.med_name}</td></tr>`
+                } else if ($("#showName").is(':checked') && $("#showMed").is(':checked') && !$("#showEmp").is(':checked')) {
+                  html +=`<tr><td>${row.part_id}</td> <td>${row.part_name}</td><td>${row.age}</td><td>${row.med_name}</td></tr>`
+                } else if (!$("#showName").is(':checked') && $("#showMed").is(':checked') && $("#showEmp").is(':checked')) {
+                  html +=`<tr><td>${row.part_id}</td> <td>${row.empid}</td><td>${row.age}</td><td>${row.med_name}</td></tr>`
+                } else if ($("#showName").is(':checked') && !$("#showMed").is(':checked') && $("#showEmp").is(':checked')) {
+                  html +=`<tr><td>${row.part_id}</td> <td>${row.part_name}</td><td>${row.age}</td><td>${row.empid}</td></tr>`
+                } else {
+                  html +=`<tr><td>${row.part_id}</td> <td>${row.part_name}</td><td>${row.age}</td><td>${row.med_name}</td><td>${row.empid}</td></tr>`
+
+                }
+              } 
+            $('#result').html(html)
+          } else {
+            alert(data.error)
+          }
+        }
+      })
+    }
+  </script>
+  </div>
+</body>
+
+</html>

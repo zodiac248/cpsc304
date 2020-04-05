@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <script src="/js/jquery.min.js"></script>
+  <title></title>
+</head>
+
+<body>
+  <p>Welcome {{ name }} !</p> 
+   <div style="width:100%;text-align:center">
+  <button><a href="/manager/employee/add">add employee</a></button>
+  <table style="width: 500px;margin:auto">
+    <tr>
+      <th>name</th>
+      <th>department</th>
+      <th>phone</th>
+      <th>address</th>
+      <th>operations</th>
+    </tr>
+    {{each employees as value index}}
+    <tr>
+      <td>{{value.name}}</td>
+      <td>{{value.department}}</td>
+      <td>{{value.phone}}</td>
+      <td>{{value.address}}</td>
+
+      <td><button onclick="delemployee('{{value.id}}')">del</button></td>
+      <td><button onclick="edit('{{value.id}}')">edit</button></td>
+    </tr>
+    {{/each}}
+  </table>
+  <script>
+    function edit(id){
+      window.location.href = "/manager/employee/edit/"+id
+    }
+    function delemployee(id){
+      let a = confirm("sure to delete this employee");
+      if(a){
+        $.ajax({
+          type: "post",
+          url: '/manager/employee/delete/'+id,
+          success: function (data) {
+              window.location.reload();
+          }
+        })
+      }
+    }
+  </script>
+</div>
+</body>
+
+</html>

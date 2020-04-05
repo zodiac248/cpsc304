@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <script src="/js/jquery.min.js"></script>
+  <title></title>
+</head>
+
+<body>
+  <p>Welcome {{ name }} !</p>
+
+  <table style="width: 500px;border:1px solid; text-align:center">
+    <tr>
+      <td colspan="2">participant distribution</td>
+    </tr>
+    <tr>
+      <th>med name</th>
+      <th>count</th>
+    </tr>
+    {{each data1 as value index}}
+    <tr>
+      <td>{{value.med}}</td>
+      <td>{{value.count}}</td>
+    </tr>
+    {{/each}}
+  </table>
+  <br>
+  <table style="width: 500px;border:1px solid; text-align:center">
+    <tr>
+      <td colspan="2">side effect distribution</td>
+    </tr>
+    <tr>
+      <th>med name</th>
+      <th>count</th>
+    </tr>
+    {{each data2 as value index}}
+    <tr>
+      <td>{{value.name}}</td>
+      <td>{{value.count}}</td>
+    </tr>
+    {{/each}}
+  </table>
+  </div>
+</body>
+
+</html>

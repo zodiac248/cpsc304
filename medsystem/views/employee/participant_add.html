@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/select.min.js"></script>
+  <link href="/css/select.css" rel="stylesheet" />
+</head>
+
+<body>
+  <table style="width: 200px;margin: 20px auto;padding:20px">
+    <th>
+    <td colspan="2">participant add</td>
+    </th>
+    <tr>
+      <td> <label>name:</label></td>
+      <td> <input id="name" type="text" name="name"></td>
+    </tr>
+    <tr>
+      <td> <label>age:</label></td>
+      <td> <input id="age" type="text" name="age"></td>
+    </tr>
+    <tr>
+      <td> <label>medication:</label></td>
+      <td> <select style="width: 150px;" class="js-example-basic-single" id="select"></select></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="width: 100px;"> <input type="button" value="submit" onclick="submit()">
+      <td>
+    </tr>
+  </table>
+
+  <script>
+    $.ajax({
+      type: "get",
+      url: '/employee/medications',
+      success: function (data) {
+        $('#select').select2({
+          maximumInputLength: 20,
+          minimumResultsForSearch: Infinity,
+          data: data.result
+
+        });
+      }
+    })
+
+
+    function submit() {
+      $.ajax({
+        type: "post",
+        url: "/employee/participant/add",
+        data: {
+          name: $('#name').val(),
+          age: $('#age').val(),
+          med_id: $('#select').val()   
+        },
+        success: function (data) {
+          if (data.code == 0) {
+            window.location = "/employee/participant/index"
+          } else {
+            alert(data.error)
+          }
+        }
+      })
+    }
+  </script>
+  </div>
+</body>
+
+</html>
