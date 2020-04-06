@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/select.min.js"></script>
+  <link href="/css/select.css" rel="stylesheet" />
+</head>
+
+<body>
+  <input id="part_id" type="hidden" value="{{participant.id}}">
+  <table style="width: 300px;margin: 20px auto;padding:20px">
+    <th>
+    <td colspan="2">effect add</td>
+    </th>
+    <tr>
+      <td> <label> name:</label></td>
+      <td> {{ participant.name }}</td>
+    </tr>
+    <tr>
+      <td> <label>symptom:</label></td>
+      <td> <input id="symptom" type="text" name="symptom"></td>
+    </tr>
+    <tr>
+      <td> <label>effect type:</label></td>
+      <td> <select style="width: 150px;" class="js-example-basic-single" id="select"></select></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="width: 100px;"> <input type="button" value="submit" onclick="submit()">
+      <td>
+    </tr>
+  </table>
+
+  <script>
+    $.ajax({
+      type: "get",
+      url: '/employee/effect/types',
+      success: function (data) {
+        $('#select').select2({
+          maximumInputLength: 20,
+          minimumResultsForSearch: Infinity,
+          data: data.result
+
+        });
+      }
+    })
+
+
+    function submit() {
+      $.ajax({
+        type: "post",
+        url: "/employee/participant/effect/add",
+        data: {
+          part_id:$('#part_id').val(),
+          symptom: $('#symptom').val(),
+          effect_type: $('#select').val(),
+        },
+        success: function (data) {
+          if (data.code == 0) {
+            window.location = "/employee/participant/index"
+          } else {
+            alert(data.error)
+          }
+        }
+      })
+    }
+  </script>
+  </div>
+</body>
+
+</html>

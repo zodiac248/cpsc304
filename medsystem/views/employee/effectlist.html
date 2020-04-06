@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <script src="/js/jquery.min.js"></script>
+  <title></title>
+</head>
+
+<body>
+  <p>Welcome {{ name }} !</p> 
+   <div style="width:100%;text-align:center">
+  <table style="width: 500px;margin:auto">
+    <tr>
+      <th>symptom</th>
+      <th>effect</th>
+      <th>effect level</th>
+    </tr>
+    {{each effectlist as value index}}
+    <tr>
+      <td>{{value.symptom}}</td>
+      <td>{{value.effect}}</td>
+      <td>{{value.effect_level}}</td>
+    {{/each}}
+  </table>
+  <script>
+  </script>
+</div>
+</body>
+
+</html>
