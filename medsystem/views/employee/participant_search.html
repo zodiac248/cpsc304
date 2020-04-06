@@ -42,7 +42,7 @@
       <td>
     </tr>
   </table>
-  <button onclick="showSideEffectPatient()" style="display:block;margin:0 auto"> show all participants experienced all symptom</button>
+  <button onclick="showSideEffectPatient()" style="display:block;margin:0 auto"> show all symptoms experienced by all patients</button>
   <button onclick="showAverageAgeByProtocol()" style="display:block;margin:0 auto"> show average age by protocol</button>
 
   <table id="result" style="width: 500px;margin: 20px auto;padding:20px;text-align:center"></table>
@@ -60,9 +60,9 @@
         success: function (data) {
           let html = "";
           if (data.code == 0 && data.data.length>0) {
-            html += '<tr><th>name</th><th>age</th><th>medication</th><th>symptom</th></tr>'
+            html += '<tr><th>type</th><th>level</th></tr>'
               for(let row of data.data){
-                html +=`<tr><td>${row.name}</td><td>${row.age}</td> <td>${row.med_name}</td> <td>${row.symptom}</td></tr>`
+                html +=`<tr><td>${row.tp}</td><td>${row.level}</td></tr>`
                
               } 
             $('#result').html(html)
